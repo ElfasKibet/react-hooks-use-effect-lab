@@ -1,40 +1,52 @@
 import React, { useState } from "react";
 import Question from "./Question";
-import quiz from "../data/quiz";
+
+const questions = [
+  {
+    prompt: "What is the capital of France?",
+    answers: ["Berlin", "London", "Paris", "Rome"],
+    correctIndex: 2,
+  },
+  {
+    prompt: "Which planet is known as the Red Planet?",
+    answers: ["Earth", "Mars", "Jupiter", "Saturn"],
+    correctIndex: 1,
+  },
+  {
+    prompt: "Who wrote 'To Kill a Mockingbird'?",
+    answers: ["Harper Lee", "Mark Twain", "Ernest Hemingway", "Jane Austen"],
+    correctIndex: 0,
+  },
+];
 
 function App() {
-  const [questions, setQuestions] = useState(quiz);
-  const [currentQuestionId, setCurrentQuestion] = useState(1);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
-  const currentQuestion = questions.find((q) => q.id === currentQuestionId);
 
-  function handleQuestionAnswered(correct) {
-    if (currentQuestionId < questions.length) {
-      setCurrentQuestion((currentQuestionId) => currentQuestionId + 1);
-    } else {
-      setCurrentQuestion(null);
+  function handleAnswer(isCorrect) {
+    if (isCorrect) {
+      setScore((prev) => prev + 1);
     }
-    if (correct) {
-      setScore((score) => score + 1);
-    }
+
+    setCurrentQuestionIndex((prev) => prev + 1);
   }
 
+  const currentQuestion = questions[currentQuestionIndex];
+
   return (
-    <main>
-      <section>
-        {currentQuestion ? (
-          <Question
-            question={currentQuestion}
-            onAnswered={handleQuestionAnswered}
-          />
-        ) : (
-          <>
-            <h1>Game Over</h1>
-            <h2>Total Correct: {score}</h2>
-          </>
-        )}
-      </section>
-    </main>
+    <div className="App">
+      <h1>Trivia Time! 🧠</h1>
+      {currentQuestion ? (
+        <Question question={currentQuestion} onAnswered={handleAnswer} />
+      ) : (
+        <div>
+          <h2>Quiz Complete!</h2>
+          <p>
+            Your score: {score} / {questions.length}
+          </p>
+        </div>
+      )}
+    </div>
   );
 }
 
